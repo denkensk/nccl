@@ -79,8 +79,8 @@ static ncclResult_t followPath(struct ncclTopoLinkList* path, struct ncclTopoNod
 
   struct ncclTopoNode* node = start;
   INFO(NCCL_GRAPH,"***********maxSteps %d", maxSteps);
-  INFO(NCCL_GRAPH,"***********pciSpeed %s", pciSpeed);
-  INFO(NCCL_GRAPH,"***********speed %s", speed);
+  INFO(NCCL_GRAPH,"***********pciSpeed %g", pciSpeed);
+  INFO(NCCL_GRAPH,"***********speed %g", speed);
   for (int step=0; step<maxSteps; step++) {
     struct ncclTopoLink* link = path->list[step];
     struct ncclTopoLink* revLink = NULL;
@@ -96,7 +96,7 @@ static ncclResult_t followPath(struct ncclTopoLinkList* path, struct ncclTopoNod
     }
     if (link->width < fwSpeed || (revSpeed && revLink->width < revSpeed)) { *steps = step; return ncclSuccess; }
     SUB_ROUND(link->width, fwSpeed);
-    INFO(NCCL_GRAPH,"***********revSpeed %s", revSpeed);
+    INFO(NCCL_GRAPH,"***********revSpeed %g", revSpeed);
     if (revSpeed) SUB_ROUND(revLink->width, revSpeed);
     node = link->remNode;
   }
