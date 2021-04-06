@@ -66,6 +66,7 @@ static ncclResult_t followPath(struct ncclTopoLinkList* path, struct ncclTopoNod
   float pciSpeed = speed;
   for (int step=0; step<path->count; step++) {
     struct ncclTopoNode* node = path->list[step]->remNode;
+    INFO(NCCL_GRAPH,"***********node->type %s", node->type);
     if (node->type == CPU) {
       // Account for P2P inefficiency through Intel CPU RC
       if (path->type == PATH_PHB && start->type == GPU &&
@@ -77,6 +78,9 @@ static ncclResult_t followPath(struct ncclTopoLinkList* path, struct ncclTopoNod
   }
 
   struct ncclTopoNode* node = start;
+  INFO(NCCL_GRAPH,"***********maxSteps %d", maxSteps);
+  INFO(NCCL_GRAPH,"***********pciSpeed %s", pciSpeed);
+  INFO(NCCL_GRAPH,"***********speed %s", speed);
   for (int step=0; step<maxSteps; step++) {
     struct ncclTopoLink* link = path->list[step];
     struct ncclTopoLink* revLink = NULL;
@@ -92,6 +96,7 @@ static ncclResult_t followPath(struct ncclTopoLinkList* path, struct ncclTopoNod
     }
     if (link->width < fwSpeed || (revSpeed && revLink->width < revSpeed)) { *steps = step; return ncclSuccess; }
     SUB_ROUND(link->width, fwSpeed);
+    INFO(NCCL_GRAPH,"***********revSpeed %s", revSpeed);
     if (revSpeed) SUB_ROUND(revLink->width, revSpeed);
     node = link->remNode;
   }
