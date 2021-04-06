@@ -66,7 +66,7 @@ static ncclResult_t followPath(struct ncclTopoLinkList* path, struct ncclTopoNod
   float pciSpeed = speed;
   for (int step=0; step<path->count; step++) {
     struct ncclTopoNode* node = path->list[step]->remNode;
-    INFO(NCCL_GRAPH,"***********node->type %s", node->type);
+    INFO(NCCL_GRAPH,"***********node->type %d", node->type);
     if (node->type == CPU) {
       // Account for P2P inefficiency through Intel CPU RC
       if (path->type == PATH_PHB && start->type == GPU &&
