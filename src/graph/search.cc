@@ -66,7 +66,7 @@ static ncclResult_t followPath(struct ncclTopoLinkList* path, struct ncclTopoNod
   float pciSpeed = speed;
   for (int step=0; step<path->count; step++) {
     struct ncclTopoNode* node = path->list[step]->remNode;
-    INFO(NCCL_GRAPH,"***********node->type %d", node->type);
+    // INFO(NCCL_GRAPH,"***********node->type<0> %d", node->type);
     if (node->type == CPU) {
       // Account for P2P inefficiency through Intel CPU RC
       if (path->type == PATH_PHB && start->type == GPU &&
@@ -78,9 +78,9 @@ static ncclResult_t followPath(struct ncclTopoLinkList* path, struct ncclTopoNod
   }
 
   struct ncclTopoNode* node = start;
-  INFO(NCCL_GRAPH,"***********maxSteps %d", maxSteps);
-  INFO(NCCL_GRAPH,"***********pciSpeed %g", pciSpeed);
-  INFO(NCCL_GRAPH,"***********speed %g", speed);
+  // INFO(NCCL_GRAPH,"***********maxSteps(1) %d", maxSteps);
+  // INFO(NCCL_GRAPH,"***********pciSpeed-42 %g", pciSpeed);
+  // INFO(NCCL_GRAPH,"***********speed %g", speed);
   for (int step=0; step<maxSteps; step++) {
     struct ncclTopoLink* link = path->list[step];
     struct ncclTopoLink* revLink = NULL;
@@ -96,7 +96,7 @@ static ncclResult_t followPath(struct ncclTopoLinkList* path, struct ncclTopoNod
     }
     if (link->width < fwSpeed || (revSpeed && revLink->width < revSpeed)) { *steps = step; return ncclSuccess; }
     SUB_ROUND(link->width, fwSpeed);
-    INFO(NCCL_GRAPH,"***********revSpeed %g", revSpeed);
+    // INFO(NCCL_GRAPH,"***********revSpeed0 %g", revSpeed);
     if (revSpeed) SUB_ROUND(revLink->width, revSpeed);
     node = link->remNode;
   }
@@ -506,11 +506,13 @@ ncclResult_t ncclTopoSearchParams(struct ncclTopoSystem* system, int pattern, in
 ncclResult_t ncclTopoSearchRec(struct ncclTopoSystem* system, struct ncclTopoGraph* graph, struct ncclTopoGraph* saveGraph, int* time) {
   int backToNet, backToFirstRank;
   NCCLCHECK(ncclTopoSearchParams(system, graph->pattern, &backToNet, &backToFirstRank));
+  INFO(NCCL_GRAPH, "system->nodes[NET].count %d", system->nodes[NET].count);
   if (system->nodes[NET].count) {
     // Start from NET
     ncclTopoSearchRecNet(system, graph, saveGraph, backToNet, backToFirstRank, time);
   } else {
     // Intra-node only.
+    INFO(NCCL_GRAPH, "graph->nChannels %d", graph->nChannels);
     if (graph->nChannels == 0) {
       // Try PCI order first
       NCCLCHECK(ncclTopoSearchTryGpu(system, graph, saveGraph, 0, backToNet, backToFirstRank, FORCED_ORDER_PCI, time, -1, -1, 0));
