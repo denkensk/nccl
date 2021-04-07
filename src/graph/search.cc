@@ -384,7 +384,7 @@ ncclResult_t ncclTopoSearchRecGpu(struct ncclTopoSystem* system, struct ncclTopo
       NCCLCHECK(ncclTopoSearchNextGpuSort(system, graph, gpu, next, &count, backToNet == -1 ? 0 : backToNet == step+1 ? 1 : -1 ));
     }
     for (int i=0; i<count; i++) {
-      INFO(NCCL_GRAPH, "next wqc %d %d", i,next[i]));
+      INFO(NCCL_GRAPH, "next wqc %d %d", i,next[i]);
       NCCLCHECK(ncclTopoSearchTryGpu(system, graph, saveGraph, step+1, backToNet, backToFirstRank, forcedOrder, time, GPU, g, next[i]));
     }
   } else if (step == backToFirstRank) {
