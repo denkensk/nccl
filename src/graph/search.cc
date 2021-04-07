@@ -507,13 +507,13 @@ ncclResult_t ncclTopoSearchParams(struct ncclTopoSystem* system, int pattern, in
 ncclResult_t ncclTopoSearchRec(struct ncclTopoSystem* system, struct ncclTopoGraph* graph, struct ncclTopoGraph* saveGraph, int* time) {
   int backToNet, backToFirstRank;
   NCCLCHECK(ncclTopoSearchParams(system, graph->pattern, &backToNet, &backToFirstRank));
-  INFO(NCCL_GRAPH, "system->nodes[NET].count %d", system->nodes[NET].count);
+  // INFO(NCCL_GRAPH, "system->nodes[NET].count %d", system->nodes[NET].count);
   if (system->nodes[NET].count) {
     // Start from NET
     ncclTopoSearchRecNet(system, graph, saveGraph, backToNet, backToFirstRank, time);
   } else {
     // Intra-node only.
-    INFO(NCCL_GRAPH, "graph->nChannels %d", graph->nChannels);
+    // INFO(NCCL_GRAPH, "graph->nChannels %d", graph->nChannels);
     if (graph->nChannels == 0) {
       // Try PCI order first
       NCCLCHECK(ncclTopoSearchTryGpu(system, graph, saveGraph, 0, backToNet, backToFirstRank, FORCED_ORDER_PCI, time, -1, -1, 0));
