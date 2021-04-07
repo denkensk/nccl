@@ -217,6 +217,7 @@ static ncclResult_t getNetPaths(struct ncclTopoSystem* system, struct ncclTopoGr
   return ncclSuccess;
 }
 
+// 
 ncclResult_t ncclTopoSearchNextGpuSort(struct ncclTopoSystem* system, struct ncclTopoGraph* graph, struct ncclTopoNode* gpu, int* next, int* countPtr, int sortNet) {
   const uint64_t flag = 1ULL<<(graph->nChannels);
   int ngpus = system->nodes[GPU].count;
@@ -244,6 +245,7 @@ ncclResult_t ncclTopoSearchNextGpuSort(struct ncclTopoSystem* system, struct ncc
     count++;
   }
 
+  // 将GPU进行排序
   // Sort GPUs
   qsort(scores, count, sizeof(struct ncclGpuScore), cmpScore);
 
@@ -321,6 +323,7 @@ ncclResult_t ncclTopoSearchRecGpu(struct ncclTopoSystem* system, struct ncclTopo
     // Determine whether we found a better solution or not
     int copy = 0;
     graph->nChannels++;
+    // 判断是否是更好的solution 如果是的话copy=1，copy=1然后从saveGraph copy到graph
     NCCLCHECK(ncclTopoCompareGraphs(graph, saveGraph, &copy));
     if (copy) {
       memcpy(saveGraph, graph, sizeof(struct ncclTopoGraph));
@@ -381,6 +384,7 @@ ncclResult_t ncclTopoSearchRecGpu(struct ncclTopoSystem* system, struct ncclTopo
       NCCLCHECK(ncclTopoSearchNextGpuSort(system, graph, gpu, next, &count, backToNet == -1 ? 0 : backToNet == step+1 ? 1 : -1 ));
     }
     for (int i=0; i<count; i++) {
+      INFO(NCCL_GRAPH, "next wqc %d %d", i,next[i]));
       NCCLCHECK(ncclTopoSearchTryGpu(system, graph, saveGraph, step+1, backToNet, backToFirstRank, forcedOrder, time, GPU, g, next[i]));
     }
   } else if (step == backToFirstRank) {
