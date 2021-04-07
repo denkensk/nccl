@@ -117,13 +117,13 @@ static ncclResult_t ncclTopoFollowPath(struct ncclTopoSystem* system, struct ncc
   *node = NULL;
   int intra = type1 == GPU && type2 == GPU;
   float speed = intra ? graph->speedIntra : graph->speedInter;
-  INFO(NCCL_GRAPH,"***********speed1 %g/%g", graph->speedIntra,graph->speedInter);
+  // INFO(NCCL_GRAPH,"***********speed1 %g/%g", graph->speedIntra,graph->speedInter);
   int type = intra ? graph->typeIntra : graph->typeInter;
 
   if (mult == 1 && (path->type > type)) return ncclSuccess;
 
   speed *= mult;
- INFO(NCCL_GRAPH,"***********speed2 %g/%g", graph->speedIntra,graph->speedInter);
+//  INFO(NCCL_GRAPH,"***********speed2 %g/%g", graph->speedIntra,graph->speedInter);
   // Check there is enough bandwidth on paths.
   int step = 0;
   NCCLCHECK(followPath(path, node1, path->count, speed, &step));
@@ -315,6 +315,7 @@ ncclResult_t ncclTopoSearchRecGpu(struct ncclTopoSystem* system, struct ncclTopo
   if ((*time) <= 0) return ncclSuccess;
   (*time)--;
 
+  // 节点GPU总数
   int ngpus = system->nodes[GPU].count;
   if (step == ngpus) {
     // Determine whether we found a better solution or not
