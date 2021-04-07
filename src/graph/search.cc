@@ -395,9 +395,9 @@ ncclResult_t ncclTopoSearchRecGpu(struct ncclTopoSystem* system, struct ncclTopo
     NCCLCHECK(ncclTopoFollowPath(system, graph, GPU, g, GPU, p, 1, &firstGpu));
     if (firstGpu) {
       NCCLCHECK(ncclTopoSearchRecGpu(system, graph, saveGraph, firstGpu, step+1, backToNet, -1, forcedOrder, time));
-      INFO(NCCL_GRAPH, "firstGpu1 %d", firstGpu);
+      INFO(NCCL_GRAPH, "firstGpu1 %d", firstGpu.type, firstGpu.id, firstGpu.cudaCompCap);
       NCCLCHECK(ncclTopoFollowPath(system, graph, GPU, g, GPU, p, -1, &firstGpu));
-      INFO(NCCL_GRAPH, "firstGpu2 %d", firstGpu);
+      INFO(NCCL_GRAPH, "firstGpu2 %d", firstGpu.type, firstGpu.id, firstGpu.cudaCompCap);
     }
   } else {
     // Next path
