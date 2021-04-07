@@ -645,7 +645,7 @@ static ncclResult_t initTransportsRank(struct ncclComm* comm, ncclUniqueId* comm
   ringGraph.minChannels = 1;
   ringGraph.maxChannels = MAXCHANNELS/2;
   NCCLCHECK(ncclTopoCompute(comm->topo, &ringGraph));
-  NCCLCHECK(ncclTopoPrintGraph(comm->topo, &ringGraph));
+  // NCCLCHECK(ncclTopoPrintGraph(comm->topo, &ringGraph));
 
   struct ncclTopoGraph treeGraph;
   treeGraph.id = 1;
@@ -655,7 +655,7 @@ static ncclResult_t initTransportsRank(struct ncclComm* comm, ncclUniqueId* comm
   treeGraph.minChannels = 1;
   treeGraph.maxChannels = ringGraph.nChannels;
   NCCLCHECK(ncclTopoCompute(comm->topo, &treeGraph));
-  NCCLCHECK(ncclTopoPrintGraph(comm->topo, &treeGraph));
+  // NCCLCHECK(ncclTopoPrintGraph(comm->topo, &treeGraph));
 
   struct ncclTopoGraph collNetGraph;
   collNetGraph.id = 2;
@@ -664,7 +664,7 @@ static ncclResult_t initTransportsRank(struct ncclComm* comm, ncclUniqueId* comm
   collNetGraph.crossNic = ncclParamCrossNic();
   collNetGraph.minChannels = collNetGraph.maxChannels = ringGraph.nChannels;
   NCCLCHECK(ncclTopoCompute(comm->topo, &collNetGraph));
-  NCCLCHECK(ncclTopoPrintGraph(comm->topo, &collNetGraph));
+  // NCCLCHECK(ncclTopoPrintGraph(comm->topo, &collNetGraph));
 
   if (comm->rank == ncclParamGraphDumpFileRank()) {
     struct ncclTopoGraph* graphs[3] = { &ringGraph, &treeGraph, &collNetGraph };
